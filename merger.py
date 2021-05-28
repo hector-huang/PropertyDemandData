@@ -6,17 +6,17 @@ def getLocationList(locDict, index):
 
 def initCoordinatesDict(minLat, maxLat, minLon, maxLon):
     coordinatesDict = {}
-    latInterval = (maxLat - minLat)/100
-    lonInterval = (maxLon - minLon)/50
-    for i in range(101):
-        for j in range(51):
+    latInterval = (maxLat - minLat)/200
+    lonInterval = (maxLon - minLon)/100
+    for i in range(201):
+        for j in range(101):
             coordinate = (minLat + latInterval*i, minLon + lonInterval*j)
             coordinatesDict[coordinate] = 0
     return coordinatesDict
 
 def getStandardizeCoordinate(prop, minLat, maxLat, minLon, maxLon):
-    latInterval = (maxLat - minLat)/100
-    lonInterval = (maxLon - minLon)/50
+    latInterval = (maxLat - minLat)/200
+    lonInterval = (maxLon - minLon)/100
     xindex = int((prop["geometry"]["coordinates"][0] - minLat)/latInterval)
     yindex = int((prop["geometry"]["coordinates"][1] - minLon)/lonInterval)
     total_views = int(prop["properties"]["total_views"])
@@ -44,7 +44,7 @@ with open('listings.geojson') as json_file:
         if value != 0:
             filteredDict[key] = value
     
-    features = [ {"type":"Feature","properties":{"id":str(int(k[0]*1000+k[1]*100)), "total_views":v, "geometry":{"type":"Point","coordinates":[k[0],k[1],0]}}} for (k,v) in filteredDict.items() ]
+    features = [ {"type":"Feature","properties":{"id":str(int(k[0]*1000+k[1]*100)),"total_views":v},"geometry":{"type":"Point","coordinates":[k[0],k[1],0]}} for (k,v) in filteredDict.items() ]
     finalDict = {"type":"FeatureCollection","crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:OGC:1.3:CRS84"}},"features":features}
     jsonString = json.dumps(finalDict)
     print(jsonString)
